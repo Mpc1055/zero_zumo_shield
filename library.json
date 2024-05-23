@@ -1,0 +1,22 @@
+{
+    "name": "Zumo Shield",
+    "keywords": "audio, esp-adf",
+    "description": "The adf_utils component of ESP-ADF",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/lbaitemple/zumo_shield"
+    },
+    "version": "1.0",
+    "authors": {
+      "name": "Li Bai",
+      "url": "https://github.com/lbaitemple/"
+    },
+    "licence": "MIT",
+    "frameworks": "arduino",
+    "platforms": "arduinozero",
+    "build" : {
+      "flags": [
+        "-I include"
+      ]
+    }
+  }
