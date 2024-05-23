@@ -27,7 +27,7 @@ static void nextNote();
 
 void PololuBuzzer::playFrequency(unsigned int freq, unsigned int dur, unsigned char volume) {
     tone(BUZZER_PIN, freq, dur);
-    delay(dur);
+    delay(dur+100); // Wait for the tone to finish + a short pause
 //    delayMicroseconds(duration[currentIdx]);
 
 }
@@ -292,4 +292,17 @@ void PololuBuzzer::playNote(unsigned char note, unsigned int dur,
     volume = 15;
   playFrequency(freq, dur, volume);  // set buzzer this freq/duration
 
+}
+
+// Checks whether it is time to start another note, and starts
+// it if so.  If it is not yet time to start the next note, this method
+// returns without doing anything.  Call this as often as possible
+// in your main loop to avoid delays between notes in the sequence.
+//
+// Returns true if it is still playing.
+unsigned char PololuBuzzer::playCheck()
+{
+  if(buzzerFinished && buzzerSequence != 0)
+    nextNote();
+  return buzzerSequence != 0;
 }
