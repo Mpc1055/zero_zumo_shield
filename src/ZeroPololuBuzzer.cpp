@@ -1,5 +1,5 @@
-#include <ZeroPololuBuzzer.h>
-#include <Tone.h>
+#include "ZeroPololuBuzzer.h"
+#include "Tone.h"
 #include "sam.h"
 #include <cctype> // Include this header for isdigit
 
@@ -27,6 +27,9 @@ static void nextNote();
 
 void PololuBuzzer::playFrequency(unsigned int freq, unsigned int dur, unsigned char volume) {
     tone(BUZZER_PIN, freq, dur);
+    delay(dur);
+//    delayMicroseconds(duration[currentIdx]);
+
 }
 
 void PololuBuzzer::play(const char *notes) {
@@ -288,4 +291,5 @@ void PololuBuzzer::playNote(unsigned char note, unsigned int dur,
   if (volume > 15)
     volume = 15;
   playFrequency(freq, dur, volume);  // set buzzer this freq/duration
+
 }
