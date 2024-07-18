@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <ZeroZumoMotors.h>
+
 /*! \anchor device_addresses
  *
  * \name Device Addresses
@@ -87,7 +89,7 @@ enum class ZumoIMUType : uint8_t {
  *
  * You must call `Wire.start()` before using any of this library's functions
  * that access the sensors. */
-class ZumoIMU
+class ZumoIMU : public ZumoMotors
 {
 public:
 
@@ -181,6 +183,8 @@ public:
    * \return True if there is new magnetometer data available; false otherwise.
    */
   bool magDataReady();
+
+  void calibrate_imu(int SPEED, int CALIBRATION_SAMPLES);
 
 private:
 

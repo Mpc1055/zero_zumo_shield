@@ -9,6 +9,10 @@
 #define LSM6DS33_WHO_ID 0x69
 #define LIS3MDL_WHO_ID  0x3D
 
+// void ZumoIMU:: ZeroZumoMotors() {
+//     // Initialization code
+// }
+
 bool ZumoIMU::init()
 {
   if (testReg(LSM303DLHC_ACC_ADDR, LSM303DLHC_REG_CTRL_REG1_A) != TEST_REG_ERROR)
@@ -387,4 +391,60 @@ void ZumoIMU::readAxes16Bit(uint8_t addr, uint8_t firstReg, vector<int16_t> & v)
 int16_t ZumoIMU::swapBytes(uint16_t value)
 {
   return ((value & 0xFF) << 8) | ((value >> 8) & 0xFF);
+}
+
+void ZumoIMU::calibrate_imu(int SPEED, int CALIBRATION_SAMPLES)
+{
+    ZumoIMU::vector<int16_t> m_max; // maximum magnetometer values, used for calibration
+    ZumoIMU::vector<int16_t> m_min; // minimum magnetometer values, used for calibration
+
+    ZumoIMU::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32767, -32767, -32767};
+  unsigned char index;
+
+   Serial.println("starting calibration");
+
+  // To calibrate the magnetometer, the Zumo spins to find the max/min
+  // magnetic vectors. This information is used to correct for offsets
+  // in the magnetometer data.
+    setLeftSpeed(SPEED);
+    setRightSpeed(-SPEED);
+
+  for(index = 0; index < CALIBRATION_SAMPLES; index ++)
+  {
+    // Take a reading of the magnetic vector and store it in compass.m
+    readMag();
+
+
+    running_min.x = min(running_min.x, m.x); ///rorig imu.m.x
+    running_min.y = min(running_min.y, m.y);
+
+    running_max.x = max(running_max.x, m.x);
+    running_max.y = max(running_max.y, m.y);
+
+    Serial.println(index);
+
+    delay(50);
+  }
+
+    setLeftSpeed(0);
+    setRightSpeed(0);
+
+  Serial.print("max.x   ");
+  Serial.print(running_max.x);
+  Serial.println();
+  Serial.print("max.y   ");
+  Serial.print(running_max.y);
+  Serial.println();
+  Serial.print("min.x   ");
+  Serial.print(running_min.x);
+  Serial.println();
+  Serial.print("min.y   ");
+  Serial.print(running_min.y);
+  Serial.println();
+
+  // Store calibrated values in m_max and m_min
+  m_max.x = running_max.x;
+  m_max.y = running_max.y;
+  m_min.x = running_min.x;
+  m_min.y = running_min.y;
 }
